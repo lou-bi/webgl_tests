@@ -29,8 +29,6 @@ const animation = () => {
   
   requestAnimationFrame( animation )
   controls.update()
-  // const time = Date.now() * 0.001
-  // console.log(wind)
   for (const el of particles) {
     // if (el.x > bounds.right || el.x < bounds.left) el.x = el.x *-1
     // if (el.y > bounds.top || el.y < bounds.bottom) el.y = el.y *-1

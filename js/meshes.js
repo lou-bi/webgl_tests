@@ -20,20 +20,20 @@ const
 	attractor1G = new THREE.Geometry(),
 	attractor2G = new THREE.Geometry(),
 	particleMaterial = new THREE.PointsMaterial({
-	  size: 0.1,
-	  color: 0xffc000,
+	  size: .1,
+	  color: 0xffcc00,
 	  // color: 0x00aaff,
 	  // map: new THREE.TextureLoader().load('img/star.png'),
 	  // depthWrite: true,
 	  blending: THREE.AdditiveBlending,
 	  transparent: true,
-	  opacity: 0.2,
+	  opacity: .1,
 	  // alphaTest: 0.6
 	}),
 	attractorMaterial = new THREE.PointsMaterial({
 	  color: 0xffffff,
-	  size: 1,
-	  map: new THREE.TextureLoader().load('img/particle.png'),
+	  size: .1,
+	  // map: new THREE.TextureLoader().load('img/particle.png'),
 	  depthWrite: true,
 	  blending: THREE.AdditiveBlending,
 	  // transparent: true,
@@ -41,7 +41,7 @@ const
 	  alphaTest: 0.6
 	})
 
-const amplitude = 5
+const amplitude = 20
 for (let i = 0; i < nbParticles; i++) {
 	const particle = new THREE.Vector3(
 		// Math.random() * (amplitude * 2) - amplitude,
@@ -49,9 +49,9 @@ for (let i = 0; i < nbParticles; i++) {
 		// Math.random() * (amplitude * 2) - amplitude,
 	)
 	particle.velocity = new THREE.Vector3(
-		Math.random() * .1 - .05,
-		Math.random() * .1 - .05,
-		Math.random() * .1 - .05
+		Math.random() * .4 - .2,
+		Math.random() * .4 - .2,
+		Math.random() * .4 - .2
 		// 0, 0, 0
 	)
 	particle.acceleration = new THREE.Vector3()
@@ -59,8 +59,8 @@ for (let i = 0; i < nbParticles; i++) {
 }
 particleSystem = new THREE.Points( particles, particleMaterial )
 
-attractor1G.vertices.push(new THREE.Vector3(0, 10, 0))
-attractor2G.vertices.push(new THREE.Vector3(0, -10, 0))
+attractor1G.vertices.push(new THREE.Vector3(0, 1, 0))
+attractor2G.vertices.push(new THREE.Vector3(0, -1, 0))
 
 let attractor1 = new THREE.Points(
 	attractor1G,

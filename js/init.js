@@ -4,10 +4,10 @@
 let
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight,
-  FOV = 45,
+  FOV = 5,
   RATIO = WIDTH / HEIGHT,
   NEAR = 0.1,
-  FAR = 10000
+  FAR = 1000
 
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('#000')
