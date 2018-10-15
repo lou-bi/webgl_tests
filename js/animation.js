@@ -5,72 +5,40 @@ import {
   controls
 } from './init.js'
 import {
-  meshes
+  PS
 } from './meshes.js'
-
+// debugger
 const size = 20
 
-const bounds = {
-  top: size, bottom: -size,
-  right: size, left: -size,
-  front: size, rear: -size
-}
+scene.add( getCleaner() )
 /**
  * Gravity
  */
 // F = G * ((m1*m2)/d²)
-const { particleSystem, attractor1, attractor2 } = meshes
-const particles = particleSystem.geometry.vertices
-
-const wind = new THREE.Vector3()
-const G = .05
-// const G = 6.67408
 const animation = () => {
   
   requestAnimationFrame( animation )
   controls.update()
-  for (const el of particles) {
-    // if (el.x > bounds.right || el.x < bounds.left) el.x = el.x *-1
-    // if (el.y > bounds.top || el.y < bounds.bottom) el.y = el.y *-1
-    // if (el.z > bounds.front || el.z < bounds.rear) el.z = el.z *-1
-    // if (el.x > bounds.right || el.x < bounds.left)
-    //   el.velocity.x *= -1
-    // if (el.y > bounds.top || el.y < bounds.bottom)
-    //   el.velocity.y *= -1
-    // if (el.z > bounds.front || el.z < bounds.rear)
-    //   el.velocity.z *= -1
-
-    let n = (new THREE.Vector3()).subVectors(attractor1.geometry.vertices[0], el)
-    let dsq = n.lengthSq()
-    dsq = THREE.Math.clamp(dsq, 5, 25)
-    // let str = G / 100
-    let str = G / dsq
-    // n.setLength(0.01)
-    n.setLength(str)
-    // n.clampLength(-1, 1)
-    el.acceleration.add(n)
-    // el.velocity.clampLength(-5, 5)
-    ///////
-    n = (new THREE.Vector3()).subVectors(attractor2.geometry.vertices[0], el)
-    dsq = n.lengthSq()
-    dsq = THREE.Math.clamp(dsq, 5, 25)
-    // let str = G / 10000000000000
-    str = G / dsq
-    // n.setLength(0.01)
-    n.setLength(str)
-    el.acceleration.add(n)
-
-    el.velocity.add(el.acceleration)
-    el.add(el.velocity)
-    el.acceleration.multiplyScalar(0)
-    // el.velocity.negate()
-  }
-  // particleSystem.rotation.z += 0.01
-  particleSystem.geometry.verticesNeedUpdate = true
+  // PS.positionAdd(0.1)
+  // PS.particles.geometry.attributes.position.needsUpdate = true
+  PS.particles.rotation.z += 0.005
+  PS.particles.rotation.y += 0.005
   renderer.render( scene, camera )
 
 }
 
 export {
   animation
+}
+
+function getCleaner() {
+  const t = new THREE.Mesh(
+    new THREE.BoxGeometry( 100, 100, 100 ),
+    new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.05,
+      side: THREE.DoubleSide
+    })
+  )
+  return t
 }
