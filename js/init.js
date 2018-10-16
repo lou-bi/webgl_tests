@@ -1,6 +1,3 @@
-
-/* global THREE, requestAnimationFrame */
-
 let
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight,
@@ -10,14 +7,13 @@ let
   FAR = 50000
 
 const scene = new THREE.Scene()
-scene.background = new THREE.Color('#000')
-// scene.fog = new THREE.Fog('#fae321')
+scene.background = new THREE.Color('#fff')
 const canvaContainer = document.getElementById('container')
 
 const camera = new THREE.PerspectiveCamera(FOV, RATIO, NEAR, FAR)
+camera.position.z = 30
+camera.position.y = 10
 const controls = new THREE.OrbitControls( camera )
-camera.position.z = 1000
-// camera.position.y = 100
 controls.update()
 
 const renderer = new THREE.WebGLRenderer({

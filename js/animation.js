@@ -4,87 +4,52 @@ import {
   camera,
   controls
 } from './init.js'
-import {
-  PS
-} from './meshes.js'
-import event from './event.js'
-event(renderer, camera)
-const size = 20
+const texture = new THREE.TextureLoader().load('../img/ground.jpg')
+texture.wrapS = THREE.RepeatWrapping
+texture.wrapT = THREE.RepeatWrapping
+texture.repeat.set(2,2)
 
-renderer.autoClearColor = false
-scene.add( getCleaner(10000) )
+const groundGeo = new THREE.PlaneGeometry(50, 50)
+const groundMaterial = new THREE.MeshBasicMaterial({
+  side: THREE.DoubleSide,
+  color: 0xe1e1e1,
+})
+const ground = new THREE.Mesh(groundGeo, groundMaterial)
+ground.rotation.x = -90
+ground.position.y = -10
 
-
-const sph1 = new THREE.Mesh(
-  new THREE.SphereGeometry(10,32,32),
-  new THREE.MeshBasicMaterial({
-    color: 0x000000
-  })
-)
-
-const sph2 = new THREE.Mesh(
-  new THREE.SphereGeometry(10,32,32),
-  new THREE.MeshBasicMaterial({
-    color: 0x000000
-  })
-)
-
-const sph3 = new THREE.Mesh(
-  new THREE.SphereGeometry(10,32,32),
-  new THREE.MeshBasicMaterial({
-    color: 0x000000
-  })
-)
-sph1.position.x = -250
-sph1.position.y = 0
-sph1.position.z = 0
-
-sph2.position.x = 250
-sph2.position.y = 0
-sph2.position.z = 0
-
-sph3.position.x = 0
-sph3.position.y = 250
-sph3.position.z = 0
-scene.add(
-  sph1,
-  sph2,
-  sph3
-)
-/**
- * Gravity
- */
-// F = G * ((m1*m2)/d²)
+const ballGeo = new THREE.SphereGeometry(1, 32, 32)
+const ballMaterial = new THREE.MeshBasicMaterial({
+  color: 0x0088ff
+})
+const ball = new THREE.Mesh(ballGeo, ballMaterial)
+ball.position.y = 10
+ball.velocity = new THREE.Vector3(0, 0, 0)
+ball.acceleration = new THREE.Vector3(0, -0.05, 0)
+ball.density = 0.5
+// ball.
+scene.add(ground, ball)
+/***********************************/
+ball.update = function() {
+  this.velocity.add(this.acceleration)
+  this.position.add(this.velocity)
+}
+ball.collide = function(target) {
+  if (target.position.y > (this.position.y - this.geometry.parameters.radius)) {
+    this.position.y = target.position.y + this.geometry.parameters.radius
+    this.velocity.y *= -1 + this.density
+  }
+}
 const animation = () => {
 
   requestAnimationFrame( animation )
   controls.update()
 
-
-  PS.applyGravityFrom(sph1.position)
-  PS.applyGravityFrom(sph2.position)
-  PS.applyGravityFrom(sph3.position)
-  // PS.applyGravityFromSelf()
-  PS.updatePositions()
-
+  ball.update()
+  ball.collide(ground)
   renderer.render( scene, camera )
-
 }
 
-export {
-  animation
-}
-
-function getCleaner(dimensions) {
-  const t = new THREE.Mesh(
-    new THREE.BoxGeometry( dimensions, dimensions, dimensions ),
-    new THREE.MeshBasicMaterial({
-      transparent: true,
-      color: 0x000000,
-      // color: 0xffffff,
-      opacity: 0.3,
-      side: THREE.DoubleSide
-    })
-  )
-  return t
-}
+;(() => {
+  animation()
+})()
