@@ -3,7 +3,7 @@ export default class ParticleSystem {
     this.maxParticles = maxParticles
     this.size = size
     this.particles = this.make()
-    this.G = 5
+    this.G = 1
   }
   make() {
     return new THREE.Points(
@@ -37,16 +37,21 @@ export default class ParticleSystem {
 
       if (distance >= 4) {
         directions.push(
-          (difX * 2 * this.G) / Math.pow(distance, 2),
-          (difY * 2 * this.G) / Math.pow(distance, 2),
-          (difZ * 2 * this.G) / Math.pow(distance, 2)
+          (difX * 10 * this.G) / Math.pow(distance, 2),
+          (difY * 10 * this.G) / Math.pow(distance, 2),
+          (difZ * 10 * this.G) / Math.pow(distance, 2)
         )
       } else {
         directions.push(
-          0,
-          0,
-          0
+          -(difX * 10 * this.G) / Math.pow(distance, 2),
+          -(difY * 10 * this.G) / Math.pow(distance, 2),
+          -(difZ * 10 * this.G) / Math.pow(distance, 2)
         )
+        // directions.push(
+        //   0,
+        //   0,
+        //   0
+        // )
       }
       newAccelerations.push(
         accelerations[i] + directions[i],
@@ -163,7 +168,7 @@ export default class ParticleSystem {
       size: this.size,
       vertexColors: THREE.VertexColors,
       sizeAttenuation: false,
-      blending: THREE.AdditiveBlending,
+      // blending: THREE.AdditiveBlending,
       // blending: THREE.SubtractiveBlending,
       transparent: true,
       opacity: 0.5,

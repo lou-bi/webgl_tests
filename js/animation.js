@@ -11,8 +11,8 @@ import event from './event.js'
 event(renderer, camera)
 const size = 20
 
-renderer.autoClearColor = false
-scene.add( getCleaner(10000) )
+// renderer.autoClearColor = false
+// scene.add( getCleaner(10000) )
 
 
 const sph1 = new THREE.Mesh(

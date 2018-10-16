@@ -10,7 +10,7 @@ let
   FAR = 50000
 
 const scene = new THREE.Scene()
-scene.background = new THREE.Color('#000')
+scene.background = new THREE.Color('#fff')
 // scene.fog = new THREE.Fog('#fae321')
 const canvaContainer = document.getElementById('container')
 

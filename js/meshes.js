@@ -5,7 +5,7 @@ import {
 
 import ParticleSystem from './components/ParticleSystem.js'
 
-const PS = new ParticleSystem(50000, 4)
+const PS = new ParticleSystem(3, 40)
 
 scene.add(PS.particles)
 
