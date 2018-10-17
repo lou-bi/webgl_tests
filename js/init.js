@@ -11,8 +11,7 @@ scene.background = new THREE.Color('#fff')
 const canvaContainer = document.getElementById('container')
 
 const camera = new THREE.PerspectiveCamera(FOV, RATIO, NEAR, FAR)
-camera.position.z = 30
-camera.position.y = 10
+camera.position.z = 500
 const controls = new THREE.OrbitControls( camera )
 controls.update()
 

@@ -4,49 +4,76 @@ import {
   camera,
   controls
 } from './init.js'
-const texture = new THREE.TextureLoader().load('../img/ground.jpg')
-texture.wrapS = THREE.RepeatWrapping
-texture.wrapT = THREE.RepeatWrapping
-texture.repeat.set(2,2)
-
-const groundGeo = new THREE.PlaneGeometry(50, 50)
-const groundMaterial = new THREE.MeshBasicMaterial({
-  side: THREE.DoubleSide,
-  color: 0xe1e1e1,
+import { make } from './lights.js'
+make()
+const geoCube = new THREE.BoxGeometry(200, 200, 200)
+const matCube = new THREE.MeshBasicMaterial({
+  // color: 0xffffff,
+  transparent: true,
+  // opacity: 0.2
 })
-const ground = new THREE.Mesh(groundGeo, groundMaterial)
-ground.rotation.x = -90
-ground.position.y = -10
+const cube = new THREE.Mesh(geoCube, matCube)
 
-const ballGeo = new THREE.SphereGeometry(1, 32, 32)
-const ballMaterial = new THREE.MeshBasicMaterial({
-  color: 0x0088ff
-})
-const ball = new THREE.Mesh(ballGeo, ballMaterial)
-ball.position.y = 10
-ball.velocity = new THREE.Vector3(0, 0, 0)
-ball.acceleration = new THREE.Vector3(0, -0.05, 0)
-ball.density = 0.5
-// ball.
-scene.add(ground, ball)
-/***********************************/
-ball.update = function() {
-  this.velocity.add(this.acceleration)
-  this.position.add(this.velocity)
-}
-ball.collide = function(target) {
-  if (target.position.y > (this.position.y - this.geometry.parameters.radius)) {
-    this.position.y = target.position.y + this.geometry.parameters.radius
-    this.velocity.y *= -1 + this.density
+const {
+  width: cw,
+  height: ch,
+  depth: cd
+} = cube.geometry.parameters
+
+const scl = 20
+let
+  colx = cw / scl,
+  coly = ch / scl,
+  colz = cd / scl
+
+const childs = []
+let inc = 0.01
+let xoff = 0
+for (let x = 0; x < colx; x++) {
+  let yoff = 0
+  for (let y = 0; y < coly; y++) {
+    let zoff = 0
+    for (let z = 0; z < colz; z++) {
+
+      const noise = ImprovedNoise().noise(xoff, yoff, zoff)
+      const size = scl / 3
+      const cg = new THREE.BoxGeometry(size, size, size)
+      const cm = new THREE.MeshLambertMaterial({
+        transparent: true,
+        // color: 0xcccccc
+        opacity: 0.5,
+        // blending: THREE.AdditiveBlending
+      })
+      const nc = new THREE.Mesh(cg, cm)
+      nc.position.x = x * scl - (cw / 2)
+      nc.position.y = y * scl - (ch / 2)
+      nc.position.z = z * scl - (cd / 2)
+      childs.push(nc)
+
+      zoff += inc
+    }
+    yoff += inc
   }
+  xoff += inc
 }
+scene.add(...childs)
+const clock = new THREE.Clock()
 const animation = () => {
 
   requestAnimationFrame( animation )
   controls.update()
+  for (let i = 0; i < childs.length; i++) {
+    const t = clock.getElapsedTime()
+    const r = ImprovedNoise().noise(t, 0, 0) + i / 1000
+    const g = ImprovedNoise().noise(0, t, 0) + i / 1000
+    const b = ImprovedNoise().noise(0, 0, t) + i / 1000
+    const col = new THREE.Color(r, g, b)
+    // childs[i].material.color = col
+    childs[i].rotation.x += 0.01
+    childs[i].rotation.y += 0.01
+    childs[i].rotation.z += 0.01
+  }
 
-  ball.update()
-  ball.collide(ground)
   renderer.render( scene, camera )
 }
 
