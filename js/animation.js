@@ -20,35 +20,45 @@ const {
   depth: cd
 } = cube.geometry.parameters
 
-const scl = 20
+const scl = 40
 let
   colx = cw / scl,
   coly = ch / scl,
   colz = cd / scl
 
-const childs = []
 let inc = 0.01
 let xoff = 0
+
+const childs = []
+
+const lineM = new THREE.LineBasicMaterial({ color: 0x000000 })
+
 for (let x = 0; x < colx; x++) {
   let yoff = 0
   for (let y = 0; y < coly; y++) {
     let zoff = 0
     for (let z = 0; z < colz; z++) {
 
-      const noise = ImprovedNoise().noise(xoff, yoff, zoff)
+      const noise = ImprovedNoise().noise(xoff, yoff, zoff) * (Math.PI * 2)
       const size = scl / 3
-      const cg = new THREE.BoxGeometry(size, size, size)
-      const cm = new THREE.MeshLambertMaterial({
-        transparent: true,
-        // color: 0xcccccc
-        opacity: 0.5,
-        // blending: THREE.AdditiveBlending
-      })
-      const nc = new THREE.Mesh(cg, cm)
-      nc.position.x = x * scl - (cw / 2)
-      nc.position.y = y * scl - (ch / 2)
-      nc.position.z = z * scl - (cd / 2)
-      childs.push(nc)
+      
+      const lineG = new THREE.Geometry()
+      
+      const linex = x * scl - (cw / 2)
+      const liney = y * scl - (ch / 2)
+      const linez = z * scl - (cd / 2)
+      
+      const begin = new THREE.Vector3( linex, liney, linez )
+      const end = begin.clone().addScalar(10)
+
+      
+      lineG.vertices.push(begin)
+      lineG.vertices.push(end)
+
+      const line = new THREE.LineSegments(lineG, lineM)
+      // line.rotateOnAxis(middle, noise)
+
+      childs.push(line)
 
       zoff += inc
     }
@@ -57,21 +67,19 @@ for (let x = 0; x < colx; x++) {
   xoff += inc
 }
 scene.add(...childs)
-const clock = new THREE.Clock()
+
+let toadd = 0.01
 const animation = () => {
 
   requestAnimationFrame( animation )
   controls.update()
+
+
   for (let i = 0; i < childs.length; i++) {
-    const t = clock.getElapsedTime()
-    const r = ImprovedNoise().noise(t, 0, 0) + i / 1000
-    const g = ImprovedNoise().noise(0, t, 0) + i / 1000
-    const b = ImprovedNoise().noise(0, 0, t) + i / 1000
-    const col = new THREE.Color(r, g, b)
-    // childs[i].material.color = col
-    childs[i].rotation.x += 0.01
-    childs[i].rotation.y += 0.01
-    childs[i].rotation.z += 0.01
+    const a = childs[i].geometry.vertices[0]
+    const b = childs[i].geometry.vertices[1]
+    const middle = (new THREE.Vector3(a)).add(new THREE.Vector3(b)).divideScalar(2).normalize()
+    debugger
   }
 
   renderer.render( scene, camera )

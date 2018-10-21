@@ -4,7 +4,7 @@ let
   FOV = 45,
   RATIO = WIDTH / HEIGHT,
   NEAR = 0.1,
-  FAR = 50000
+  FAR = 10000
 
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('#fff')
