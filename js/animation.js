@@ -79,7 +79,6 @@ const animation = () => {
     const a = childs[i].geometry.vertices[0]
     const b = childs[i].geometry.vertices[1]
     const middle = (new THREE.Vector3(a)).add(new THREE.Vector3(b)).divideScalar(2).normalize()
-    debugger
   }
 
   renderer.render( scene, camera )
